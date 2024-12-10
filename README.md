@@ -82,6 +82,83 @@ Receituário completo da primeira consulta registrada com receituário associado
 Todos os dados da consulta de maior valor e também da de menor valor (ambas as consultas não foram realizadas sob convênio).
 Todos os dados das internações em seus respectivos quartos, calculando o total da internação a partir do valor de diária do quarto e o número de dias entre a entrada e a alta.
 Data, procedimento e número de quarto de internações em quartos do tipo “apartamento”.
+---
+# Consultas:
+1. Consultas do Ano de 2024 e Convênio
+Consulta que retorna todas as consultas realizadas no ano de 2024 sob convênio, bem como o valor médio dessas consultas. 
+```js
+       > db.consultas.aggregate([
+    { $match: { 
+        data: { $gte: ISODate("2024-01-01"), $lte: ISODate("2024-12-31") },
+        conveniada: true
+    }},
+    { $group: {
+        _id: null,
+        valorMedio: { $avg: "$valor" },
+        consultas: { $push: "$$ROOT" }
+    }},
+    { $project: { _id: 0, valorMedio: 1, consultas: 1 } }
+]);
+<  valorMedio: 219.54545454545453
+(Exemplo de alguns resultados de consultas)
+< consultas: [
+    {
+      _id: ObjectId('66f1a79a4fe19755df1eba08'),
+      data: 2024-06-25T00:00:00.000Z,
+      medico_id: ObjectId('66e96ae976efecbc5e470c24'),
+      paciente_id: ObjectId('66e96b0576efecbc5e470c28'),
+      valor: 200,
+      conveniada: true,
+      especialidade_buscada: 'Clínica Geral',
+      descricao: 'Paciente com febre e tosse',
+      receita: {
+        medicamentos: [
+          {
+            nome: 'Paracetamol comprimidos',
+            quantidade: 10,
+            instrucoes: 'Tomar 1 comprimido a cada 8 horas'
+          },
+          {
+            nome: 'Ibuprofeno comprimidos',
+            quantidade: 12,
+            instrucoes: 'Tomar 1 comprimido a cada 12 horas'
+          }
+        ],
+        tratamentos: [
+          {
+            nome: 'Inalação com soro fisiológico',
+            frequencia: '2 vezes ao dia'
+          }
+        ]
+      }
+    },
+    {
+      _id: ObjectId('66f1a79a4fe19755df1eba0a'),
+      data: 2024-09-30T00:00:00.000Z,
+      medico_id: ObjectId('66e96ae976efecbc5e470c26'),
+      paciente_id: ObjectId('66e96b0576efecbc5e470c30'),
+      valor: 250,
+      conveniada: true,
+      especialidade_buscada: 'Dermatologia',
+      descricao: 'Paciente com erupção cutânea',
+      receita: {
+        medicamentos: [
+          {
+            nome: 'Antialérgico',
+            quantidade: 10,
+            instrucoes: 'Tomar 1 comprimido ao dia'
+          }
+        ],
+        tratamentos: [
+          {
+            nome: 'Aplicação de creme hidratante',
+            frequencia: '2 vezes ao dia'
+          }
+        ]
+      }
+    },
+```
+
 Nome do paciente, data da consulta e especialidade de todas as consultas em que os pacientes eram menores de 18 anos na data da consulta e cuja especialidade não seja “pediatria”, ordenando por data de realização da consulta.
 Nome do paciente, nome do médico, data da internação e procedimentos das internações realizadas por médicos da especialidade “gastroenterologia”, que tenham acontecido em “enfermaria”.
 Os nomes dos médicos, seus CRMs e a quantidade de consultas que cada um realizou.
