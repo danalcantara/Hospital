@@ -164,3 +164,5 @@ Nome do paciente, nome do médico, data da internação e procedimentos das inte
 Os nomes dos médicos, seus CRMs e a quantidade de consultas que cada um realizou.
 Todos os médicos que tenham "Gabriel" no nome. 
 Os nomes, CORENs e número de internações de enfermeiros que participaram de mais de uma internação.
+
+thx
